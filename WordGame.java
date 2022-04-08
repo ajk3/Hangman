@@ -46,7 +46,7 @@ public class WordGame
         List<String> tenLetters = new ArrayList<>();
         
         
-        GenericList<GameStat> winnerInfo = new GenericList<>(); // holds the winning games
+        List<GameStat> winnerInfo = new ArrayList<>(); // holds the winning games
         
         //This function divides the words into three separate List based on their length
         wordSeperator(sixLetters, eightLetters,tenLetters);
@@ -56,7 +56,7 @@ public class WordGame
         
         System.out.println();
         
-        System.out.println("Thank you so much for playing hangman!!!!\n");
+        System.out.println("Thank you so much for playing the hangman!!!!\n");
         
         input.close();
         
@@ -164,7 +164,7 @@ public class WordGame
      * number of guesses remaining, letters that are already guessed, and 
      * prompts the user to input the next letter
      */
-    public static void guessLetter(List<String> words,GenericList<GameStat> winnerInfo, int numTries)
+    public static void guessLetter(List<String> words,List<GameStat> winnerInfo, int numTries)
     {
         SecureRandom random = new SecureRandom();
         Scanner input =  new Scanner(System.in);
@@ -177,6 +177,8 @@ public class WordGame
         String randomWord = (words.get(randomInt)); // generates random word
 
         char [] randomWordToChar = randomWord.toCharArray();
+        
+        //System.out.println(randomWordToChar);
        
         char[] guess = new char[randomWordToChar.length]; // The array that holds the user's guess 
         Arrays.fill(guess,'_'); // '_' will be later replaced by the correct letters if the guess is correct. 
@@ -187,7 +189,7 @@ public class WordGame
         
         do
         {
-            int i = 0;
+           
             
             displayChar(guess); // printing the char array
             
@@ -195,7 +197,7 @@ public class WordGame
                              + "----------------------------------------------");
 
 
-            System.out.printf("\nYou have %d remaining guesses", (numTries-i));
+            System.out.printf("\nYou have %d remaining guesses", (numTries));
             System.out.printf("\nYou have already guessed the following letters: %s%n", usedChars);
 
             System.out.print("\nEnter next letter: ");
@@ -225,14 +227,12 @@ public class WordGame
                         }
                    }
                }
-               if(!printed) 
-                {
-                   System.out.println("Sorry the guess is incorrect!\n");
-                }
+            }
+            if(!printed || !validChar)
+            {
+                numTries--;
             }
            
-            i++;
-            numTries--;
             
             guessed = (Arrays.equals(guess,randomWordToChar)? true : false);
             
@@ -248,7 +248,7 @@ public class WordGame
             winner.setLettersGuessed(usedChars);
             winner.setTrialRemaining(numTries);
             
-            winnerInfo.addRecord(winner);
+            winnerInfo.add(winner);
             
             displayChar(guess);
             
@@ -343,7 +343,7 @@ public class WordGame
      */
     public static void levelsOfGame(Scanner input, List<String> sixLetters, 
                             List<String> eightLetters ,List<String> tenLetters,
-                            GenericList<GameStat> winnerInfo)
+                            List<GameStat> winnerInfo)
     {
         boolean playAgain;
         
@@ -405,7 +405,7 @@ public class WordGame
      * @param winnerInfo 
      * this function saves the winning games to a file
      */
-    public static <T> void saveGame(GenericList<T> winnerInfo)
+    public static <T> void saveGame(List<T> winnerInfo)
     {
         try(Formatter output = new Formatter("winningGames.txt"))
         {
